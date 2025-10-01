@@ -6,33 +6,13 @@ const FilterComponent = ({ onFilterChange, onClearFilters }) => {
   const { user } = useAuth();
   const [filters, setFilters] = useState({
     search: '',
-    supplier: '',
     minQuantity: '',
     maxQuantity: '',
     lowStock: false,
     sortBy: 'name',
     sortOrder: 'asc'
   });
-  const [suppliers, setSuppliers] = useState([]);
-  // const [loading, setLoading] = useState(false); // Removed unused variable
-
-  // Fetch suppliers for dropdown
-  useEffect(() => {
-    const fetchSuppliers = async () => {
-      if (!user || !user.token) {
-        return; // Don't fetch if user is not authenticated
-      }
-      try {
-        const response = await axiosInstance.get('/api/items/suppliers', {
-          headers: { Authorization: `Bearer ${user.token}` },
-        });
-        setSuppliers(response.data);
-      } catch (error) {
-        console.error('Failed to fetch suppliers:', error);
-      }
-    };
-    fetchSuppliers();
-  }, [user]);
+  // Removed supplier dropdown logic
 
   const handleFilterChange = (key, value) => {
     const newFilters = { ...filters, [key]: value };
@@ -43,7 +23,6 @@ const FilterComponent = ({ onFilterChange, onClearFilters }) => {
   const handleClearFilters = () => {
     const clearedFilters = {
       search: '',
-      supplier: '',
       minQuantity: '',
       maxQuantity: '',
       lowStock: false,
@@ -72,30 +51,11 @@ const FilterComponent = ({ onFilterChange, onClearFilters }) => {
             </label>
             <input
               type="text"
-              placeholder="Search by name or supplier..."
+              placeholder="Search by name..."
               value={filters.search}
               onChange={(e) => handleFilterChange('search', e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-          </div>
-
-          {/* Supplier Filter */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Supplier
-            </label>
-            <select
-              value={filters.supplier}
-              onChange={(e) => handleFilterChange('supplier', e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="">All Suppliers</option>
-              {suppliers.map((supplier, index) => (
-                <option key={index} value={supplier}>
-                  {supplier}
-                </option>
-              ))}
-            </select>
           </div>
 
           {/* Quantity Range */}
