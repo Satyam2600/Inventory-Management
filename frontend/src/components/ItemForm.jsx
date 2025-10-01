@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
 
-const ItemForm = ({ items, setItems, editingItem, setEditingItem }) => {
+const ItemForm = ({ items, setItems, editingItem, setEditingItem, onItemAdd }) => {
   const { user } = useAuth();
   const [formData, setFormData] = useState({ 
     name: '', 
@@ -225,51 +225,19 @@ const ItemForm = ({ items, setItems, editingItem, setEditingItem }) => {
             type="text"
             placeholder="Supplier name"
             value={formData.supplier.name}
-            onChange={(e) => setFormData({
-              ...formData,
-              supplier: { ...formData.supplier, name: e.target.value }
-            })}
+            onChange={(e) => setFormData({ ...formData, supplier: { ...formData.supplier, name: e.target.value } })}
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Supplier Contact Info</label>
-          <input
-            type="text"
-            placeholder="Supplier contact information"
-            value={formData.supplier.contactInfo}
-            onChange={(e) => setFormData({
-              ...formData,
-              supplier: { ...formData.supplier, contactInfo: e.target.value }
-            })}
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Supplier Lead Time (Days)</label>
-          <input
-            type="number"
-            placeholder="Supplier lead time in days"
-            value={formData.supplier.leadTime}
-            onChange={(e) => setFormData({
-              ...formData,
-              supplier: { ...formData.supplier, leadTime: e.target.value }
-            })}
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            min="1"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Cost (per unit)</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Supplier Contact</label>
           <input
-            type="number"
-            placeholder="Cost per unit"
-            value={formData.cost}
-            onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
+            type="text"
+            placeholder="Supplier contact info"
+            value={formData.supplier.contactInfo}
+            onChange={(e) => setFormData({ ...formData, supplier: { ...formData.supplier, contactInfo: e.target.value } })}
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            min="0"
-            step="0.01"
           />
         </div>
       </div>
@@ -278,23 +246,8 @@ const ItemForm = ({ items, setItems, editingItem, setEditingItem }) => {
         <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
         <textarea
           placeholder="Item description"
-          value={formData.description}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-          className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          rows="3"
-        />
-      </div>
+></textarea>
 
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">Tags</label>
-        <input
-          type="text"
-          placeholder="Enter tags separated by commas"
-          value={formData.tags}
-          onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-          className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        />
-        <p className="text-xs text-gray-500 mt-1">Separate multiple tags with commas</p>
       </div>
 
       <div className="mt-6 flex space-x-3">
