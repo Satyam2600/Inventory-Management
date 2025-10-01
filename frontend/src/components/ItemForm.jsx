@@ -10,15 +10,12 @@ const ItemForm = ({ items, setItems, editingItem, setEditingItem, onItemAdd }) =
     reorderLevel: '10', 
     unit: 'pcs', 
     supplier: {
-      name: '',
-      contactInfo: '',
-      leadTime: '7'
+      name: ''
     },
     leadTime: '7',
     category: 'General',
     cost: '0',
-    description: '',
-    tags: ''
+    description: ''
   });
 
   useEffect(() => {
@@ -29,15 +26,12 @@ const ItemForm = ({ items, setItems, editingItem, setEditingItem, onItemAdd }) =
         reorderLevel: editingItem.reorderLevel,
         unit: editingItem.unit,
         supplier: {
-          name: editingItem.supplier?.name || '',
-          contactInfo: editingItem.supplier?.contactInfo || '',
-          leadTime: editingItem.supplier?.leadTime || ''
+          name: editingItem.supplier?.name || ''
         },
         leadTime: editingItem.leadTime || '',
         category: editingItem.category || '',
         cost: editingItem.cost || '',
-        description: editingItem.description || '',
-        tags: editingItem.tags?.join(', ') || ''
+        description: editingItem.description || ''
       });
     } else {
       setFormData({ 
@@ -46,15 +40,12 @@ const ItemForm = ({ items, setItems, editingItem, setEditingItem, onItemAdd }) =
         reorderLevel: '', 
         unit: '', 
         supplier: {
-          name: '',
-          contactInfo: '',
-          leadTime: ''
+          name: ''
         },
         leadTime: '',
         category: '',
         cost: '',
-        description: '',
-        tags: ''
+        description: ''
       });
     }
   }, [editingItem]);
@@ -65,13 +56,9 @@ const ItemForm = ({ items, setItems, editingItem, setEditingItem, onItemAdd }) =
       // Prepare the data for submission
       const submissionData = {
         ...formData,
-        // Ensure leadTime is always a number
         leadTime: parseInt(formData.leadTime) || 7,
-        // Format supplier data properly
         supplier: {
-          name: formData.supplier.name,
-          contactInfo: formData.supplier.contactInfo,
-          leadTime: parseInt(formData.supplier.leadTime) || 7
+          name: formData.supplier.name
         }
       };
 
@@ -98,15 +85,12 @@ const ItemForm = ({ items, setItems, editingItem, setEditingItem, onItemAdd }) =
         reorderLevel: '', 
         unit: 'pcs', 
         supplier: {
-          name: '',
-          contactInfo: '',
-          leadTime: '7'
+          name: ''
         },
         leadTime: '7',
         category: '',
         cost: '',
-        description: '',
-        tags: ''
+        description: ''
       });
 
       // Trigger parent component refresh
@@ -119,12 +103,13 @@ const ItemForm = ({ items, setItems, editingItem, setEditingItem, onItemAdd }) =
         quantity: '', 
         reorderLevel: '', 
         unit: '', 
-        supplier: '',
+        supplier: {
+          name: ''
+        },
         leadTime: '',
         category: '',
         cost: '',
-        description: '',
-        tags: ''
+        description: ''
       });
     } catch (error) {
       alert('Failed to save item.');
@@ -211,7 +196,7 @@ const ItemForm = ({ items, setItems, editingItem, setEditingItem, onItemAdd }) =
           <label className="block text-sm font-medium text-gray-700 mb-1">Lead Time (Days)</label>
           <input
             type="number"
-            placeholder="Days to receive new stock"
+            placeholder="Lead time (days)"
             value={formData.leadTime}
             onChange={(e) => setFormData({ ...formData, leadTime: e.target.value })}
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -220,23 +205,12 @@ const ItemForm = ({ items, setItems, editingItem, setEditingItem, onItemAdd }) =
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Supplier Name</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Supplier</label>
           <input
             type="text"
             placeholder="Supplier name"
             value={formData.supplier.name}
             onChange={(e) => setFormData({ ...formData, supplier: { ...formData.supplier, name: e.target.value } })}
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Supplier Contact</label>
-          <input
-            type="text"
-            placeholder="Supplier contact info"
-            value={formData.supplier.contactInfo}
-            onChange={(e) => setFormData({ ...formData, supplier: { ...formData.supplier, contactInfo: e.target.value } })}
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
