@@ -25,27 +25,14 @@ const Calendar = () => {
         const today = new Date();
         const deliveryDate = new Date(today);
         deliveryDate.setDate(deliveryDate.getDate() + (item.leadTime || 7));
-        
-        // Determine event color based on stock status
-        let eventColor = '#10B981'; // Green for normal stock
-        if (item.quantity <= item.reorderLevel) {
-          eventColor = '#EF4444'; // Red for low stock
-        } else if (item.quantity <= item.reorderLevel * 1.5) {
-          eventColor = '#F59E0B'; // Yellow for approaching low stock
-        }
-
         return {
           id: item._id,
           title: `${item.name} - Delivery`,
           start: deliveryDate.toISOString().split('T')[0],
-          backgroundColor: eventColor,
-          borderColor: eventColor,
           extendedProps: {
             item: item,
             deliveryDate: deliveryDate,
             leadTime: item.leadTime,
-            quantity: item.quantity,
-            reorderLevel: item.reorderLevel,
             supplier: item.supplier?.name || 'N/A'
           }
         };
@@ -87,15 +74,13 @@ const Calendar = () => {
 
   const renderEventContent = (eventInfo) => {
     const item = eventInfo.event.extendedProps.item;
-    const isLowStock = item.quantity <= item.reorderLevel;
-    
     return (
       <div className="p-1">
         <div className="font-medium text-sm truncate">
           {item.name}
         </div>
         <div className="text-xs opacity-75">
-          {isLowStock ? '⚠️ Low Stock' : '📦 Normal'}
+          Lead Time: {item.leadTime} days
         </div>
       </div>
     );
@@ -106,10 +91,7 @@ const Calendar = () => {
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Delivery Calendar</h2>
         <p className="text-gray-600">
-          View scheduled deliveries based on lead times. 
-          <span className="text-red-600"> Red events</span> indicate low stock items, 
-          <span className="text-yellow-600"> yellow</span> for approaching low stock, 
-          <span className="text-green-600"> green</span> for normal stock.
+          View scheduled deliveries based on item lead times.
         </p>
       </div>
 
@@ -205,13 +187,7 @@ const Calendar = () => {
                       <span className="font-medium">Expected Delivery:</span> {selectedItem.extendedProps?.deliveryDate?.toLocaleDateString() || 'N/A'}
                     </div>
                     <div className="pt-2">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        selectedItem.quantity <= selectedItem.reorderLevel 
-                          ? 'bg-red-100 text-red-800' 
-                          : 'bg-green-100 text-green-800'
-                      }`}>
-                        {selectedItem.quantity <= selectedItem.reorderLevel ? 'Low Stock' : 'In Stock'}
-                      </span>
+                      {/* Removed stock status badge for calendar modal */}
                     </div>
                   </div>
                 )}
