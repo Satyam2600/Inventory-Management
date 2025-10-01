@@ -1,3 +1,31 @@
+// Decorator for alert status
+class ItemAlertDecorator {
+  constructor(item) {
+    this.item = item;
+  }
+  getAlertStatus() {
+    if (this.item.quantity <= 0) return 'Out of Stock';
+    if (this.item.quantity <= this.item.reorderLevel * 0.5) return 'Critical';
+    if (this.item.quantity <= this.item.reorderLevel * 0.8) return 'Urgent';
+    if (this.item.quantity <= this.item.reorderLevel) return 'Low Stock';
+    return 'In Stock';
+  }
+}
+
+// Decorator for delivery date
+class ItemDeliveryDecorator {
+  constructor(item) {
+    this.item = item;
+  }
+  getDeliveryDate(orderDate = new Date()) {
+    const deliveryDate = new Date(orderDate);
+    deliveryDate.setDate(deliveryDate.getDate() + this.item.leadTime);
+    return deliveryDate;
+  }
+}
+
+module.exports.ItemAlertDecorator = ItemAlertDecorator;
+module.exports.ItemDeliveryDecorator = ItemDeliveryDecorator;
 const mongoose = require('mongoose');
 
 const itemSchema = new mongoose.Schema(

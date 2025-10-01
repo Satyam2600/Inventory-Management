@@ -1,4 +1,5 @@
 const Item = require("../models/Item");
+const { ItemAlertDecorator, ItemDeliveryDecorator } = require("../models/Item");
 const AlertManager = require("../observers/AlertManager");
 const AlertTableObserver = require("../observers/AlertTableObserver");
 const NotificationObserver = require("../observers/NotificationObserver");
@@ -66,17 +67,28 @@ const getItems = async (req, res) => {
     const skip = (parseInt(page) - 1) * parseInt(limit);
     
     // Execute query with pagination
-    const items = await Item.find(filter)
+    const itemsRaw = await Item.find(filter)
       .sort(sortOptions)
       .skip(skip)
       .limit(parseInt(limit));
-    
+
+    // Decorate each item with alert status and delivery date
+    const items = itemsRaw.map(item => {
+      const alertDecorator = new ItemAlertDecorator(item);
+      const deliveryDecorator = new ItemDeliveryDecorator(item);
+      return {
+        ...item.toObject(),
+        alertStatus: alertDecorator.getAlertStatus(),
+        deliveryDate: deliveryDecorator.getDeliveryDate(),
+      };
+    });
+
     // Get total count for pagination info
     const totalItems = await Item.countDocuments(filter);
-    
+
     // Check for low stock alerts using Observer pattern
-    alertManager.checkLowStock(items);
-    
+    alertManager.checkLowStock(itemsRaw);
+
     res.json({
       items,
       pagination: {
@@ -166,12 +178,21 @@ function isLowStock(item) {
 };
 const lowStock = async (req, res) => {
   try {
-    const items = await Item.find({});
-    const low = items.filter(isLowStock);
-    
+    const itemsRaw = await Item.find({});
+    // Decorate items with alert status
+    const low = itemsRaw
+      .map(item => {
+        const alertDecorator = new ItemAlertDecorator(item);
+        return {
+          ...item.toObject(),
+          alertStatus: alertDecorator.getAlertStatus(),
+        };
+      })
+      .filter(item => item.alertStatus === 'Low Stock' || item.alertStatus === 'Critical' || item.alertStatus === 'Urgent');
+
     // Use Observer pattern to check and notify about low stock
-    alertManager.checkLowStock(items);
-    
+    alertManager.checkLowStock(itemsRaw);
+
     res.json(low);
   } catch (error) {
     res.status(500).json({ message: error.message });
